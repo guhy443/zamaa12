@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zama Daily Quiz – Day 13</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; font-family:'Poppins', sans-serif; }
+    body {
+      display:flex; justify-content:center; align-items:center; min-height:100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color:white; text-align:center;
+    }
+    .container {
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); padding:30px; border-radius:20px;
+      width:90%; max-width:500px; box-shadow:0 8px 25px rgba(0,0,0,0.3); animation:fadeIn 0.7s ease;
+    }
+    @keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to {opacity:1; transform:scale(1);} }
+    button {
+      width:80%; margin:10px auto; padding:12px; font-size:1em; font-weight:600;
+      border:none; border-radius:10px; cursor:pointer; transition:0.3s;
+      background: linear-gradient(90deg,#4facfe,#00f2fe); color:#fff;
+    }
+    button:hover { transform:scale(1.05); opacity:0.9; }
+    #timer { font-size:1.2em; margin:10px 0; color:#ffeb3b; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="start-screen">
+  <h1>🧩 Zama Daily Quiz – Day 13</h1>
+  <p>Test your knowledge about Zama, FHE, and confidential blockchain!</p>
+  <button onclick="startQuiz()">Start Quiz 🚀</button>
+</div>
+
+<div class="container hidden" id="quiz-screen">
+  <h2 id="question"></h2>
+  <div id="options"></div>
+  <p id="timer"></p>
+</div>
+
+<div class="container hidden" id="result-screen">
+  <h1>🎯 Quiz Completed!</h1>
+  <p id="score"></p>
+  <button onclick="restartQuiz()">Play Again 🔁</button>
+</div>
+
+<script>
+const quizData = [
+  {q:"What is Zama’s primary goal?", options:["Build decentralized social media","Enable confidential blockchain & AI solutions","Create NFT marketplaces","Develop gaming engines"], correct:1},
+  {q:"FHE allows computation on:", options:["Plaintext only","Encrypted data","Random numbers","Images only"], correct:1},
+  {q:"Which Zama product is a virtual machine for encrypted computations?", options:["FHEVM","ZamaOS","CipherChain","SecureNet"], correct:0},
+  {q:"Concrete library is used for:", options:["Building websites","FHE computations","AI chatbots","Data visualization"], correct:1},
+  {q:"Who can claim Zama OG NFT rewards?", options:["Top content creators","All Zama users","Only investors","Validators only"], correct:0},
+  {q:"Zama Creator Program rewards include:", options:["Cash prizes","NFTs","Early alpha access","All of the above"], correct:3},
+  {q:"Why is privacy important in blockchain?", options:["To reveal identities always","To selectively reveal information","To increase transaction fees","To prevent all computations"], correct:1},
+  {q:"Which programming language powers TFHE-rs?", options:["Rust","Python","C++","Java"], correct:0},
+  {q:"What does “homomorphic” mean in FHE?", options:["Compute on encrypted data without decryption","Compress data for storage","Encrypt only passwords","Decrypt faster"], correct:0},
+  {q:"Which domains benefit the most from Zama FHE tech?", options:["Gaming only","Privacy-preserving AI & blockchain","E-commerce","Social media"], correct:1}
+];
+
+let current=0, score=0, timer, timeLeft=10;
+const startScreen=document.getElementById("start-screen");
+const quizScreen=document.getElementById("quiz-screen");
+const resultScreen=document.getElementById("result-screen");
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const timerEl=document.getElementById("timer");
+const scoreEl=document.getElementById("score");
+
+function startQuiz() {
+  startScreen.classList.add("hidden");
+  quizScreen.classList.remove("hidden");
+  current=0; score=0; showQuestion();
+}
+
+function showQuestion() {
+  clearInterval(timer); timeLeft=10; timerEl.textContent=`⏳ Time left: ${timeLeft}s`;
+  const q=quizData[current];
+  questionEl.textContent=`Q${current+1}. ${q.q}`;
+  optionsEl.innerHTML="";
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>checkAnswer(i);
+    optionsEl.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  timer=setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent=`⏳ Time left: ${timeLeft}s`;
+    if(timeLeft<=0){ clearInterval(timer); nextQuestion(); }
+  },1000);
+}
+
+function checkAnswer(selected){
+  clearInterval(timer);
+  if(selected===quizData[current].correct){ score++; alert("✅ Correct!"); }
+  else { alert("❌ Wrong!"); }
+  nextQuestion();
+}
+
+function nextQuestion(){
+  current++;
+  if(current<quizData.length) showQuestion();
+  else showResult();
+}
+
+function showResult(){
+  quizScreen.classList.add("hidden");
+  resultScreen.classList.remove("hidden");
+  scoreEl.textContent=`You scored ${score} out of ${quizData.length}!`;
+}
+
+function restartQuiz(){
+  resultScreen.classList.add("hidden");
+  startScreen.classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
